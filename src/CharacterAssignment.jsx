@@ -186,7 +186,7 @@ export default function CharacterForm() {
             <Button type="submit" onClick={handleSubmitLike}>
                 Yes
             </Button>
-            <Button type="submit" onClick={handleSubmitDislike}>
+            <Button type="submit" onClick={handleSubmitWhoIs}>
                 No
             </Button>
             <Button type="submit" onClick={handleSubmitWhoIs}>
@@ -210,6 +210,8 @@ export default function CharacterForm() {
   )}
       {workflow === 3 && (
         <>
+        <p>Does the following poem change your mind?</p>
+        <p>{ poem }</p>
         <form id="characterForm" className="flex max-w-md flex-col gap-4">
         <Button type="submit" onClick={handleSubmitLike}>
             Yes
