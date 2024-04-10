@@ -22,11 +22,10 @@ export default function CharacterForm() {
       mode: "cors",
       cache: "no-cache",
       headers: {
-        "Content-Type" : "application/json",
+        "Content-Type": "application/json",
       },
       body: name,
-    }
-    );
+    });
 
     const characterAssignment = await response.json();
     setId(characterAssignment.id);
@@ -36,21 +35,28 @@ export default function CharacterForm() {
     return characterAssignment;
   }
 
-  async function callWhoIs(){
-
+  async function callWhoIs() {
     console.log("id: " + id);
     console.log("name: " + name);
     console.log("characterName: " + characterName);
-    let bodyJson = {id, name, characterName, whoIs, poem, updatedPoem, isLiked};
+    let bodyJson = {
+      id,
+      name,
+      characterName,
+      whoIs,
+      poem,
+      updatedPoem,
+      isLiked,
+    };
 
     const response = await fetch("http://localhost:8080/devnexus2024/whois", {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
       headers: {
-        "Content-Type" : "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(bodyJson)
+      body: JSON.stringify(bodyJson),
     });
 
     const characterAssignment = await response.json();
@@ -58,51 +64,68 @@ export default function CharacterForm() {
     return characterAssignment;
   }
 
-  async function callPoem(){    
+  async function callPoem() {
     console.log("id: " + id);
     console.log("name: " + name);
     console.log("characterName: " + characterName);
     console.log("whoIs: " + whoIs);
-    let bodyJson = {id, name, characterName, whoIs, poem, updatedPoem, isLiked};
+    let bodyJson = {
+      id,
+      name,
+      characterName,
+      whoIs,
+      poem,
+      updatedPoem,
+      isLiked,
+    };
     const response = await fetch("http://localhost:8080/devnexus2024/poem", {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
       headers: {
-        "Content-Type" : "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(bodyJson)
-    }
-    );
+      body: JSON.stringify(bodyJson),
+    });
 
     const characterAssignment = await response.json();
     console.log(characterAssignment);
     return characterAssignment;
   }
 
-  async function callUpdatedPoem(){
+  async function callUpdatedPoem() {
     console.log("id: " + id);
     console.log("name: " + name);
     console.log("characterName: " + characterName);
     console.log("whoIs: " + whoIs);
     console.log("poem: " + poem);
-    let bodyJson = {id, name, characterName, whoIs, poem, updatedPoem, isLiked};
-    const response = await fetch("http://localhost:8080/devnexus2024/addtopoem", {
-      method: "POST",
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        "Content-Type" : "application/json",
+    let bodyJson = {
+      id,
+      name,
+      characterName,
+      whoIs,
+      poem,
+      updatedPoem,
+      isLiked,
+    };
+    const response = await fetch(
+      "http://localhost:8080/devnexus2024/addtopoem",
+      {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyJson),
       },
-      body: JSON.stringify(bodyJson)
-    }
     );
 
     const characterAssignment = await response.json();
     setUpdatedPoem(characterAssignment.updatedPoem);
     return characterAssignment;
   }
-  
+
   // 0
   async function handleSubmitName(e) {
     e.preventDefault();
@@ -161,7 +184,7 @@ export default function CharacterForm() {
 
   function handleSubmitLike(e) {
     e.preventDefault();
-    setLiked(true);
+    setIsLiked(true);
     setWorkflow(6);
   }
 
@@ -178,91 +201,113 @@ export default function CharacterForm() {
     } else if (workflow === 5) {
       setWorkflow(6);
     }
-    setLiked(false);
+    setIsLiked(false);
   }
 
   return (
     <div>
       {workflow === 0 && (
-        <form id="nameForm" className="flex max-w-md flex-col gap-4">
-        <div>
-        <div className="mb-2 block">
-            <Label htmlFor="name" value="Your name" />
-        </div>
-        <TextInput id="name" placeholder="Your name" required onChange={(e) => {
-              setName(e.target.value);
-            }} />
-        </div>
-        <Button type="submit" onClick={handleSubmitName}>Submit</Button>
-    </form>
-    )}
+        <form id="nameForm" className="flex max-w-md flex-col gap-4 pt-20">
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="name" value="Your name" />
+            </div>
+            <TextInput
+              id="name"
+              placeholder="Your name"
+              required
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
+          </div>
+          <Button type="submit" onClick={handleSubmitName}>
+            Submit
+          </Button>
+        </form>
+      )}
       {workflow === 1 && (
         <>
-        <div>
+          <div className="pt-20">
             <p>Your Star Wars Spirit Charachter is {characterName}!</p>
-            Do you feel a bond with {characterName}?
-        </div>
-        <form id="characterForm" className="flex max-w-md flex-col gap-4">
+            <p className="pt-10">Do you feel a bond with {characterName}?</p>
+          </div>
+          <form
+            id="characterForm"
+            className="flex max-w-md flex-col gap-4 pt-5"
+          >
             <Button type="submit" onClick={handleSubmitLike}>
-                Yes
+              Yes
             </Button>
             <Button type="submit" onClick={handleSubmitWhoIs}>
-                No
+              No
             </Button>
             <Button type="submit" onClick={handleSubmitWhoIs}>
-                Who is {characterName}?
+              Who is {characterName}?
             </Button>
-        </form>
+          </form>
         </>
-    )}
+      )}
       {workflow === 2 && (
         <>
-        <p>{ characterName } is { whoIs }. Do you feel a bond with { characterName} now?</p>
-        <form id="characterForm" className="flex max-w-md flex-col gap-4">
-        <Button type="submit" onClick={handleSubmitLike}>
-            Yes
-        </Button>
-        <Button type="submit" onClick={handleSubmitPoem}>
-            No
-        </Button>
-        </form>
+          <div className="pt-20">
+            <p className="whitespace-pre-line">{whoIs}.</p>
+            <p className="pt-10">
+              Do you feel a bond with {characterName} now?
+            </p>
+          </div>
+          <form
+            id="characterForm"
+            className="flex max-w-md flex-col gap-4 pt-5"
+          >
+            <Button type="submit" onClick={handleSubmitLike}>
+              Yes
+            </Button>
+            <Button type="submit" onClick={handleSubmitPoem}>
+              No
+            </Button>
+          </form>
         </>
-  )}
+      )}
       {workflow === 3 && (
         <>
-        <p>Does the following poem change your mind?</p>
-        <p className="whitespace-pre-line">{ poem }</p>
-        <form id="characterForm" className="flex max-w-md flex-col gap-4">
-        <Button type="submit" onClick={handleSubmitLike}>
-            Yes
-        </Button>
-        <Button type="submit" onClick={handleSubmitUpdatePoem}>
-            No
-        </Button>
-        </form>
+          <p className="pt-20">Does the following poem change your mind?</p>
+          <p className="whitespace-pre-line pt-10">{poem}</p>
+          <form
+            id="characterForm"
+            className="flex max-w-md flex-col gap-4 pt-5"
+          >
+            <Button type="submit" onClick={handleSubmitLike}>
+              Yes
+            </Button>
+            <Button type="submit" onClick={handleSubmitUpdatePoem}>
+              No
+            </Button>
+          </form>
         </>
       )}
       {workflow === 4 && (
         <>
-        <p>What if we added something to the poem?</p>
-        <p className="whitespace-pre-line">{ updatedPoem }</p>
-        <form id="updatedPoemForm" className="flex max-w-md flex-col gap-4">
-        <Button type="submit" onClick={handleSubmitLike}>
-            Yes
-        </Button>
-        <Button type="submit" onClick={handleSubmitDislike}>
-            No
-        </Button>
-        </form>
+          <p className="pt-20">What if we added something to the poem?</p>
+          <p className="whitespace-pre-line pt-10">{updatedPoem}</p>
+          <form
+            id="updatedPoemForm"
+            className="flex max-w-md flex-col gap-4 pt-5"
+          >
+            <Button type="submit" onClick={handleSubmitLike}>
+              Yes
+            </Button>
+            <Button type="submit" onClick={handleSubmitDislike}>
+              No
+            </Button>
+          </form>
         </>
       )}
       {workflow === 5 && (
-        <WorkflowForm
-          workflow={workflow}
-          text={proseText}
-          handleSubmitLike={handleSubmitLike}
-          handleSubmitDislike={handleSubmitDislike}
-        />
+        <>
+          <h1 className="bold pt-20 italic">May the Force be with You!</h1>
+          <h2 className="bold pt-5">Enjoy Devnexus 20!</h2>
+        </>
       )}
       {workflow === 6 && (
         <form id="feedbackForm">
