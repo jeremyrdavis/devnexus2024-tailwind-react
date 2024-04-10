@@ -223,12 +223,18 @@ export default function CharacterForm() {
         </>
       )}
       {workflow === 4 && (
-        <WorkflowForm
-          workflow={workflow}
-          text={updatedPoemText}
-          handleSubmitLike={handleSubmitLike}
-          handleSubmitDislike={handleSubmitDislike}
-        />
+        <>
+        <p>What if we added something to the poem?</p>
+        <p>{ poem }</p>
+        <form id="updatedPoemForm" className="flex max-w-md flex-col gap-4">
+        <Button type="submit" onClick={handleSubmitLike}>
+            Yes
+        </Button>
+        <Button type="submit" onClick={handleSubmitDislike}>
+            No
+        </Button>
+        </form>
+        </>
       )}
       {workflow === 5 && (
         <WorkflowForm
