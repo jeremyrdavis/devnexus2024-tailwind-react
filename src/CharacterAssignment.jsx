@@ -3,14 +3,15 @@ import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import axios from "axios";
 
 export default function CharacterForm() {
+  const [id, setId] = useState("");
   const [workflow, setWorkflow] = useState(0);
   const [name, setName] = useState("");
-  const [character, setCharacter] = useState("");
+  const [characterName, setCharacterName] = useState("");
   const [whoIs, setWhoIs] = useState("");
   const [poem, setPoem] = useState("");
   const [updatedPoem, setUpdatedPoem] = useState("");
   const [prose, setProse] = useState("");
-  const [liked, setLiked] = useState("");
+  const [isLiked, setIsLiked] = useState("");
   const [stage, setStage] = useState("");
   const [stars, setStars] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -28,11 +29,20 @@ export default function CharacterForm() {
     );
 
     const characterAssignment = await response.json();
+    setId(characterAssignment.id);
+    setName(characterAssignment.name);
+    setCharacterName(characterAssignment.characterName);
     console.log(characterAssignment);
     return characterAssignment;
   }
 
   async function callWhoIs(){
+
+    console.log("id: " + id);
+    console.log("name: " + name);
+    console.log("characterName: " + characterName);
+    let bodyJson = {id, name, characterName, whoIs, poem, updatedPoem, isLiked};
+
     const response = await fetch("http://localhost:8080/devnexus2024/whois", {
       method: "POST",
       mode: "cors",
@@ -40,9 +50,8 @@ export default function CharacterForm() {
       headers: {
         "Content-Type" : "application/json",
       },
-      body: name,
-    }
-    );
+      body: JSON.stringify(bodyJson)
+    });
 
     const characterAssignment = await response.json();
     console.log(characterAssignment);
@@ -50,6 +59,11 @@ export default function CharacterForm() {
   }
 
   async function callPoem(){    
+    console.log("id: " + id);
+    console.log("name: " + name);
+    console.log("characterName: " + characterName);
+    console.log("whoIs: " + whoIs);
+    let bodyJson = {id, name, characterName, whoIs, poem, updatedPoem, isLiked};
     const response = await fetch("http://localhost:8080/devnexus2024/poem", {
       method: "POST",
       mode: "cors",
@@ -57,7 +71,7 @@ export default function CharacterForm() {
       headers: {
         "Content-Type" : "application/json",
       },
-      body: name,
+      body: JSON.stringify(bodyJson)
     }
     );
 
@@ -67,6 +81,12 @@ export default function CharacterForm() {
   }
 
   async function callUpdatedPoem(){
+    console.log("id: " + id);
+    console.log("name: " + name);
+    console.log("characterName: " + characterName);
+    console.log("whoIs: " + whoIs);
+    console.log("poem: " + poem);
+    let bodyJson = {id, name, characterName, whoIs, poem, updatedPoem, isLiked};
     const response = await fetch("http://localhost:8080/devnexus2024/addtopoem", {
       method: "POST",
       mode: "cors",
@@ -74,12 +94,12 @@ export default function CharacterForm() {
       headers: {
         "Content-Type" : "application/json",
       },
-      body: name,
+      body: JSON.stringify(bodyJson)
     }
     );
 
     const characterAssignment = await response.json();
-    console.log("received response: " + characterAssignment);
+    setUpdatedPoem(characterAssignment.updatedPoem);
     return characterAssignment;
   }
   
@@ -90,7 +110,7 @@ export default function CharacterForm() {
     console.log("assigning character for " + name);
     let characterAssignment = await assignCharacter(name);
     console.log("received characterAssignment: " + characterAssignment);
-    setCharacter(characterAssignment.characterName);
+    setCharacterName(characterAssignment.characterName);
     console.log("character assigned: " + characterAssignment.characterName);
     setWorkflow(1);
   }
@@ -98,9 +118,9 @@ export default function CharacterForm() {
   // 2
   async function handleSubmitWhoIs(e) {
     e.preventDefault();
-    console.log("calling whoIs for " + character);
-    let characterAssignment = await callWhoIs(character);
-    console.log("received characterAssignment: " + characterAssignment);
+    console.log("calling whoIs for " + characterName);
+    let characterAssignment = await callWhoIs(characterName);
+    console.log(characterAssignment);
     setWhoIs(characterAssignment.whoIs);
     console.log("whoIs assigned: " + characterAssignment.whoIs);
     setWorkflow(2);
@@ -109,8 +129,8 @@ export default function CharacterForm() {
   // 3
   async function handleSubmitPoem(e) {
     e.preventDefault();
-    console.log("submitting poem for " + character);
-    let characterAssignment = await callPoem(character);
+    console.log("submitting poem for " + characterName);
+    let characterAssignment = await callPoem(characterName);
     console.log("received characterAssignment: " + characterAssignment);
     setPoem(characterAssignment.poem);
     setWorkflow(3);
@@ -119,10 +139,10 @@ export default function CharacterForm() {
   // 4
   async function handleSubmitUpdatePoem(e) {
     e.preventDefault();
-    console.log("submitting updated poem for " + character);
-    let characterAssignment = await callUpdatedPoem(character);
+    console.log("submitting updated poem for " + characterName);
+    let characterAssignment = await callUpdatedPoem(characterName);
     console.log("received characterAssignment: " + characterAssignment);
-    setUpdatedPoem(updatedPoemText);
+    setUpdatedPoem(characterAssignment.updatedPoem);
     setWorkflow(4);
   }
 
@@ -179,8 +199,8 @@ export default function CharacterForm() {
       {workflow === 1 && (
         <>
         <div>
-            <p>Your Star Wars Spirit Charachter is {character}!</p>
-            Do you feel a bond with {character}?
+            <p>Your Star Wars Spirit Charachter is {characterName}!</p>
+            Do you feel a bond with {characterName}?
         </div>
         <form id="characterForm" className="flex max-w-md flex-col gap-4">
             <Button type="submit" onClick={handleSubmitLike}>
@@ -190,14 +210,14 @@ export default function CharacterForm() {
                 No
             </Button>
             <Button type="submit" onClick={handleSubmitWhoIs}>
-                Who is {character}?
+                Who is {characterName}?
             </Button>
         </form>
         </>
     )}
       {workflow === 2 && (
         <>
-        <p>{ character } is { whoIs }. Do you feel a bond with { character} now?</p>
+        <p>{ characterName } is { whoIs }. Do you feel a bond with { characterName} now?</p>
         <form id="characterForm" className="flex max-w-md flex-col gap-4">
         <Button type="submit" onClick={handleSubmitLike}>
             Yes
@@ -211,7 +231,7 @@ export default function CharacterForm() {
       {workflow === 3 && (
         <>
         <p>Does the following poem change your mind?</p>
-        <p>{ poem }</p>
+        <p className="whitespace-pre-line">{ poem }</p>
         <form id="characterForm" className="flex max-w-md flex-col gap-4">
         <Button type="submit" onClick={handleSubmitLike}>
             Yes
@@ -225,7 +245,7 @@ export default function CharacterForm() {
       {workflow === 4 && (
         <>
         <p>What if we added something to the poem?</p>
-        <p>{ poem }</p>
+        <p className="whitespace-pre-line">{ updatedPoem }</p>
         <form id="updatedPoemForm" className="flex max-w-md flex-col gap-4">
         <Button type="submit" onClick={handleSubmitLike}>
             Yes
